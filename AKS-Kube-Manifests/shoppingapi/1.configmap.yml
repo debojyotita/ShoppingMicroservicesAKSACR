@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shoppingapi-configmap
+data:
+  connectionstring: mongodb://username:password@mongodb-service:27017
+  apiurl: http://shoppingapi-service:4000
+  dbname: CatalogDb
+  collectionname: products
+

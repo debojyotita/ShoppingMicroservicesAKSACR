@@ -1,0 +1,1 @@
+kubectl create secret docker-registry acr-imagepull-secret --docker-server=debouk.azurecr.io --docker-username=a80f76eb-295c-43ae-a86e-e9283c8d2f7a --docker-password=L-q8Q~K27ANbSDWzLgN3zwc.RNjiOgT0jRHM2coB

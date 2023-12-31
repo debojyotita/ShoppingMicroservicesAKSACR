@@ -1,0 +1,122 @@
+name: dockercompose8905556348347886270
+services:
+  shopping.api:
+    build:
+      context: D:\AKS learn\.Net Microservice\Shopping.Docker
+      dockerfile: Shopping.API/Dockerfile
+      labels:
+        com.microsoft.created-by: visual-studio
+        com.microsoft.visual-studio.project-name: Shopping.API
+    container_name: shoppingapi
+    depends_on:
+      shopping.db:
+        condition: service_started
+        required: true
+    entrypoint:
+      - tail
+      - -f
+      - /dev/null
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      DatabaseSettings:CollectionName: products
+      DatabaseSettings:ConnectionString: mongodb://shoppingdb:27017
+      DatabaseSettings:DatabaseName: CatalogDb
+    image: shoppingapi
+    labels:
+      com.microsoft.visual-studio.project-name: Shopping.API
+      com.microsoft.visualstudio.debuggee.arguments: ' --additionalProbingPath /root/.nuget/packages  "/app/Shopping.API.dll"'
+      com.microsoft.visualstudio.debuggee.killprogram: /bin/sh -c "if PID=$$(pidof dotnet); then kill $$PID; fi"
+      com.microsoft.visualstudio.debuggee.program: dotnet
+      com.microsoft.visualstudio.debuggee.workingdirectory: /app
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 80
+        published: "4000"
+        protocol: tcp
+    tty: true
+    volumes:
+      - type: bind
+        source: C:\Users\User\vsdbg\vs2017u5
+        target: /remote_debugger
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Users\User\AppData\Roaming/ASP.NET/Https
+        target: /root/.aspnet/https
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Users\User\AppData\Roaming/Microsoft/UserSecrets
+        target: /root/.microsoft/usersecrets
+        read_only: true
+        bind:
+          create_host_path: true
+  shopping.client:
+    build:
+      context: D:\AKS learn\.Net Microservice\Shopping.Docker
+      dockerfile: Shopping.Client/Dockerfile
+      labels:
+        com.microsoft.created-by: visual-studio
+        com.microsoft.visual-studio.project-name: Shopping.Client
+    container_name: shoppingclient
+    depends_on:
+      shopping.api:
+        condition: service_started
+        required: true
+    entrypoint:
+      - tail
+      - -f
+      - /dev/null
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ShoppingUrl: http://shoppingapi
+    image: shoppingclient
+    labels:
+      com.microsoft.visual-studio.project-name: Shopping.Client
+      com.microsoft.visualstudio.debuggee.arguments: ' --additionalProbingPath /root/.nuget/packages  "/app/Shopping.Client.dll"'
+      com.microsoft.visualstudio.debuggee.killprogram: /bin/sh -c "if PID=$$(pidof dotnet); then kill $$PID; fi"
+      com.microsoft.visualstudio.debuggee.program: dotnet
+      com.microsoft.visualstudio.debuggee.workingdirectory: /app
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 80
+        published: "5000"
+        protocol: tcp
+    tty: true
+    volumes:
+      - type: bind
+        source: C:\Users\User\vsdbg\vs2017u5
+        target: /remote_debugger
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Users\User\AppData\Roaming/ASP.NET/Https
+        target: /root/.aspnet/https
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: bind
+        source: C:\Users\User\AppData\Roaming/Microsoft/UserSecrets
+        target: /root/.microsoft/usersecrets
+        read_only: true
+        bind:
+          create_host_path: true
+  shopping.db:
+    container_name: shoppingdb
+    image: mongo:5.0.23
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 27017
+        published: "27017"
+        protocol: tcp
+    restart: always
+networks:
+  default:
+    name: dockercompose8905556348347886270_default

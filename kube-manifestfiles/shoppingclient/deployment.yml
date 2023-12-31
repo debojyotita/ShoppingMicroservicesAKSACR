@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shoppingclient-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: shoppingclient
+  template:
+    metadata:
+      labels:
+        app: shoppingclient
+    spec:
+      containers:
+      - name: shoppingclient
+        image: rairio/shoppingclient:v1
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "90Mi"
+            cpu: "300m"
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Development
+        - name: ShoppingUrl
+          valueFrom:
+            configMapKeyRef:
+              name: shoppingapi-configmap
+              key: apiurl
+
+
+
+

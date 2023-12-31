@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shoppingapi-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: shoppingapi
+  template:
+    metadata:
+      labels:
+        app: shoppingapi
+    spec:
+      containers:
+      - name: shoppingapi
+        image: rairio/shoppingapi:v1
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "90Mi"
+            cpu: "300m"
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Development
+        - name: DatabaseSettings__ConnectionString
+          valueFrom:
+            configMapKeyRef:
+              name: shoppingapi-configmap
+              key: connectionstring
+        - name: DatabaseSettings__DatabaseName
+          valueFrom:
+            configMapKeyRef:
+              name: shoppingapi-configmap
+              key: dbname
+        - name: DatabaseSettings__CollectionName
+          valueFrom:
+            configMapKeyRef:
+              name: shoppingapi-configmap
+              key: collectionname
+
+
+
+
